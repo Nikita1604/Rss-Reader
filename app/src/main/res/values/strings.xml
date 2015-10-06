@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Rss Reader</string>
     <string name="action_settings">Settings</string>
+
+
+    <string name="hello_string">Welcome to Rss Reader! Please wait why rss feed load!</string>
 </resources>
