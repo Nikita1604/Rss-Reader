@@ -6,23 +6,44 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainActivity extends SherlockActivity {
 
-    //test field. must be deleted
-    private ArrayList<RSSNewsModel> rssNewsList;
 
-    //field contain url rss feed
+    /**
+     * field contain url rss feed
+     */
     private final String urlFeed = "http://news.tut.by/rss/pda/all.rss";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // call method download and parse rss feed
-        rssNewsList = RssDownload.Download(urlFeed,(TextView) findViewById(R.id.hello_tv));
+
+        /**
+         * clearing database from old RSS news
+         */
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        try {
+            TableUtils.dropTable(databaseHelper.getConnectionSource(), NewsItem.class, false);
+            TableUtils.createTable(databaseHelper.getConnectionSource(), NewsItem.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+         * call method that download and parse rss feed
+         */
+        RssDownload.Download(urlFeed, this);
     }
 
 

@@ -1,18 +1,34 @@
 package com.pischik.nikita.rssreader;
 
-/* model RSS News. Contain field that represent title, publishing date, image url and full news url */
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
-public class RSSNewsModel {
+//class that represent ORMLite data
+
+@DatabaseTable(tableName = "news")
+public class NewsItem {
+
+    @DatabaseField(generatedId = true)
+    private int id;
+
+    @DatabaseField
     private String title;
-    private String datePublishing;
+
+    @DatabaseField
+    private String pubDate;
+
+    @DatabaseField
     private String imageUrl;
+
+    @DatabaseField
     private String fullNewsUrl;
 
-    public RSSNewsModel(String title, String datePublishing, String imageUrl, String fullNewsUrl) {
-        this.title = title;
-        this.datePublishing = datePublishing;
-        this.imageUrl = imageUrl;
-        this.fullNewsUrl = fullNewsUrl;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -23,12 +39,12 @@ public class RSSNewsModel {
         this.title = title;
     }
 
-    public String getDatePublishing() {
-        return datePublishing;
+    public String getPubDate() {
+        return pubDate;
     }
 
-    public void setDatePublishing(String datePublishing) {
-        this.datePublishing = datePublishing;
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
     }
 
     public String getImageUrl() {
