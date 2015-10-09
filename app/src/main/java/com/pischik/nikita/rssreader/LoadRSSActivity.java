@@ -13,7 +13,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class MainActivity extends SherlockActivity {
+public class LoadRSSActivity extends SherlockActivity {
 
 
     /**
@@ -29,7 +29,7 @@ public class MainActivity extends SherlockActivity {
         setContentView(R.layout.activity_main);
 
         /**
-         * clearing database from old RSS news
+         * clear database from old RSS news
          */
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         try {
@@ -41,7 +41,7 @@ public class MainActivity extends SherlockActivity {
 
 
         /**
-         * call method that download and parse rss feed
+         * call method that download and parse RSS feed
          */
         RssDownload.Download(urlFeed, this);
     }

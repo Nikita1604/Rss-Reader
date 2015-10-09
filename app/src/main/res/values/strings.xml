@@ -4,4 +4,5 @@
 
 
     <string name="hello_string">Welcome to Rss Reader! Please wait why rss feed load!</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>

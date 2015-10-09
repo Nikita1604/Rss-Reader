@@ -1,6 +1,7 @@
 package com.pischik.nikita.rssreader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -162,6 +163,8 @@ public class RssDownload{
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
+                Intent intent = new Intent(context, NewsActivity.class);
+                context.startActivity(intent);
             }
         };
         asyncTask.execute();
