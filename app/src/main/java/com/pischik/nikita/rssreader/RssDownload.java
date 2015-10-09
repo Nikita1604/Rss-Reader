@@ -216,10 +216,6 @@ public class RssDownload{
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                //Intent intent = new Intent(context, NewsActivity.class)
-                //        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                //        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //context.startActivity(intent);
                 ((NewsActivity)activity).onDownloadAndParseFinished();
             }
         };
