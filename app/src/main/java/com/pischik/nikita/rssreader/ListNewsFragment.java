@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -18,6 +19,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+/**
+ * fragment contain logic and view List News screen
+ */
+
 public class ListNewsFragment extends SherlockFragment {
 
     List<NewsItem> news;
@@ -28,6 +33,9 @@ public class ListNewsFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.list_news_fragment,
                 container, false);
 
+        /**
+         * initialization imageLoader to use Universal Image Loader
+         */
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(getSherlockActivity()));
 
@@ -45,9 +53,18 @@ public class ListNewsFragment extends SherlockFragment {
             e.printStackTrace();
         }
 
-        ListView listView = (ListView) view.findViewById(R.id.list_news);
+        final ListView listView = (ListView) view.findViewById(R.id.list_news);
         ArrayAdapter<NewsItem> adapter = new NewsArrayAdapter(getActivity(), news, imageLoader);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((NewsActivity) getSherlockActivity())
+                        .onNewsListItemClick(
+                                ((NewsItem)listView.getItemAtPosition(position)).getFullNewsUrl());
+            }
+        });
 
         return view;
     }

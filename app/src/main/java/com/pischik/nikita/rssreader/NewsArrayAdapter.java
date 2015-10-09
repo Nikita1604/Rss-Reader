@@ -52,6 +52,7 @@ public class NewsArrayAdapter extends ArrayAdapter<NewsItem> {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.title.setText(list.get(position).getTitle());
         holder.pubDate.setText(list.get(position).getPubDate());
+        if (!list.get(position).getImageUrl().equals("no image"))
         imageLoader.displayImage(list.get(position).getImageUrl(), holder.image);
         return view;
     }

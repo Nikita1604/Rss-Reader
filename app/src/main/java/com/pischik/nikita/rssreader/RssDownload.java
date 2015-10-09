@@ -3,10 +3,12 @@ package com.pischik.nikita.rssreader;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -85,7 +87,7 @@ public class RssDownload{
                             case "item":
                                 NewsItem newsItem = new NewsItem();
                                 newsItem.setTitle(title);
-                                newsItem.setPubDate(pubDate);
+                                newsItem.setPubDate(parsePubDate(pubDate));
                                 newsItem.setFullNewsUrl(link);
                                 newsItem.setImageUrl(parseDescription(imageUrl));
                                 newsDao.create(newsItem);
@@ -109,8 +111,10 @@ public class RssDownload{
     /**
      * method that parse <description> tag and return image url
      */
-
     private static String parseDescription(String text) {
+        if (!text.contains("img")) {
+            return "no image";
+        }
         int index = text.indexOf('"');
         String newDescription = text.substring(index+1);
         index = newDescription.indexOf('"');
@@ -118,10 +122,59 @@ public class RssDownload{
     }
 
     /**
-     * method that use AsyncTask to Download and Parse XML RSS feed
+     * method that represent publishing date in new format
      */
+    private static String parsePubDate(String pubDate) {
+        String day = pubDate.substring(5,7);
+        String month = pubDate.substring(8,11);
+        String year = pubDate.substring(12,16);
+        String time = pubDate.substring(17,22);
+        switch (month) {
+            case "Jan":
+                month = "01";
+                break;
+            case "Feb":
+                month = "02";
+                break;
+            case "Mar":
+                month = "03";
+                break;
+            case "Apr":
+                month = "04";
+                break;
+            case "May":
+                month = "05";
+                break;
+            case "Jun":
+                month = "06";
+                break;
+            case "Jul":
+                month = "07";
+                break;
+            case "Aug":
+                month = "08";
+                break;
+            case "Sep":
+                month = "09";
+                break;
+            case "Oct":
+                month = "10";
+                break;
+            case "Nov":
+                month = "11";
+                break;
+            case "Dec":
+                month = "12";
+                break;
+        }
+        return (day + "." + month + "." + year + ", " + time);
+    }
 
-    public static void Download(final String url, final Context context) {
+    /**
+     * method that use AsyncTask to Download XML file RSS feed
+     */
+    public static void Download(final String url, final Context context,
+                                final SherlockFragmentActivity activity) {
         AsyncTask asyncTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
@@ -163,8 +216,11 @@ public class RssDownload{
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                Intent intent = new Intent(context, NewsActivity.class);
-                context.startActivity(intent);
+                //Intent intent = new Intent(context, NewsActivity.class)
+                //        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                //        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //context.startActivity(intent);
+                ((NewsActivity)activity).onDownloadAndParseFinished();
             }
         };
         asyncTask.execute();
