@@ -115,8 +115,11 @@ public class RssDownload{
         if (!text.contains("img")) {
             return "no image";
         }
-        int index = text.indexOf('"');
-        String newDescription = text.substring(index+1);
+
+        int index = text.indexOf("img");
+        String newDescription = text.substring(index);
+        index = newDescription.indexOf('"');
+        newDescription = newDescription.substring(index + 1);
         index = newDescription.indexOf('"');
         return newDescription.substring(0,index);
     }

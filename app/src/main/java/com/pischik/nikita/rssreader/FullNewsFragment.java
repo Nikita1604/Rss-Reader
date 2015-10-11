@@ -1,5 +1,7 @@
 package com.pischik.nikita.rssreader;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,7 +30,9 @@ public class FullNewsFragment extends SherlockFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             webView.loadUrl(bundle.getString("URL"));
+
         }
+
 
         return view;
     }

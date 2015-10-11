@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -21,12 +22,15 @@ public class NewsArrayAdapter extends ArrayAdapter<NewsItem> {
     private final List<NewsItem> list;
     private final Activity context;
     private final ImageLoader imageLoader;
+    private final DisplayImageOptions displayImageOptions;
 
-    public NewsArrayAdapter(Activity context, List<NewsItem> list, ImageLoader imageLoader) {
+    public NewsArrayAdapter(Activity context, List<NewsItem> list, ImageLoader imageLoader,
+                            DisplayImageOptions displayImageOptions) {
         super(context, R.layout.news_list_item_layout, list);
         this.context = context;
         this.list = list;
         this.imageLoader = imageLoader;
+        this.displayImageOptions = displayImageOptions;
     }
 
     static class ViewHolder {
@@ -53,7 +57,8 @@ public class NewsArrayAdapter extends ArrayAdapter<NewsItem> {
         holder.title.setText(list.get(position).getTitle());
         holder.pubDate.setText(list.get(position).getPubDate());
         if (!list.get(position).getImageUrl().equals("no image"))
-        imageLoader.displayImage(list.get(position).getImageUrl(), holder.image);
+        imageLoader.displayImage(list.get(position).getImageUrl(), holder.image,
+                displayImageOptions);
         return view;
     }
 }

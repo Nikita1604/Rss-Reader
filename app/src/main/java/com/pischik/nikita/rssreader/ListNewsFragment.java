@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -26,6 +27,7 @@ import java.util.List;
 public class ListNewsFragment extends SherlockFragment {
 
     List<NewsItem> news;
+    ImageLoader imageLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,8 +38,12 @@ public class ListNewsFragment extends SherlockFragment {
         /**
          * initialization imageLoader to use Universal Image Loader
          */
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(getSherlockActivity()));
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+
+        imageLoader = ImageLoader.getInstance();
 
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(
                 getActivity().getApplicationContext(),
@@ -54,7 +60,8 @@ public class ListNewsFragment extends SherlockFragment {
         }
 
         final ListView listView = (ListView) view.findViewById(R.id.list_news);
-        ArrayAdapter<NewsItem> adapter = new NewsArrayAdapter(getActivity(), news, imageLoader);
+        ArrayAdapter<NewsItem> adapter = new NewsArrayAdapter(getActivity(), news, imageLoader,
+                displayImageOptions);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
