@@ -5,4 +5,5 @@
     <dimen name="hello_text_size">30sp</dimen>
     <dimen name="list_text_size">16sp</dimen>
     <dimen name="list_text_margin">10dp</dimen>
+    <dimen name="lost_connection_text_size">20sp</dimen>
 </resources>

@@ -84,4 +84,8 @@ public class NewsActivity extends SherlockFragmentActivity {
             super.onBackPressed();
         }
     }
+
+    public void updateListNews() {
+        listNewsFragment.updateListNews();
+    }
 }

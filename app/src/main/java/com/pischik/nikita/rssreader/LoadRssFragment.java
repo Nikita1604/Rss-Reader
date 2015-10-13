@@ -20,59 +20,22 @@ import java.sql.SQLException;
  */
 public class LoadRssFragment extends SherlockFragment {
 
-    /**
-     * field contain url rss feed
-     */
-    private final String urlFeed = "http://news.tut.by/rss/pda/all.rss";
 
-    private static boolean hasConnect(Context context) {
 
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        wifiInfo = cm.getActiveNetworkInfo();
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        return false;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main,
                 container, false);
 
-        if (hasConnect(getSherlockActivity().getApplicationContext())) {
-            ImageLoader.getInstance().clearDiskCache();
-            ImageLoader.getInstance().clearMemoryCache();
-            /**
-             * clear database from old RSS news
-             */
-            DatabaseHelper databaseHelper = OpenHelperManager
-                    .getHelper(getSherlockActivity().getApplicationContext(), DatabaseHelper.class);
-            try {
-                TableUtils.dropTable(databaseHelper.getConnectionSource(), NewsItem.class, false);
-                TableUtils.createTable(databaseHelper.getConnectionSource(), NewsItem.class);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        getSherlockActivity().getSupportActionBar().setTitle("Загрузка новостей");
+        RssDownload.clearDatabase(getSherlockActivity().getApplicationContext());
+        getSherlockActivity().getSupportActionBar().setTitle(R.string.loading_news_screen_title);
 
         /**
          * call method that download and parse RSS feed
          */
-        RssDownload.Download(urlFeed,
-                getSherlockActivity().getApplicationContext(),
+        RssDownload.Download(true, getSherlockActivity().getApplicationContext(),
                 getSherlockActivity());
 
         return view;

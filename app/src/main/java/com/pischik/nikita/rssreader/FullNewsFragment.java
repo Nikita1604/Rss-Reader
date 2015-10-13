@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -18,6 +19,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class FullNewsFragment extends SherlockFragment {
 
     private WebView webView;
+    private TextView lostConnectionTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,14 +27,19 @@ public class FullNewsFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.full_news_fragment,
                 container, false);
 
-        getSherlockActivity().getSupportActionBar().setTitle("Текст новости");
+        getSherlockActivity().getSupportActionBar().setTitle(R.string.full_news_screen_title);
         webView = (WebView) view.findViewById(R.id.webView);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            webView.loadUrl(bundle.getString("URL"));
-
+        lostConnectionTextView = (TextView) view.findViewById(R.id.lostConnectionTV);
+        if (RssDownload.hasConnect(getActivity().getApplicationContext())) {
+            lostConnectionTextView.setVisibility(View.INVISIBLE);
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                webView.loadUrl(bundle.getString("URL"));
+            }
+        } else {
+            lostConnectionTextView.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.INVISIBLE);
         }
-
 
         return view;
     }

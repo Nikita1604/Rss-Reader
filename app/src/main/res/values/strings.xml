@@ -5,4 +5,11 @@
 
     <string name="hello_string">Welcome to Rss Reader! Please wait while RSS feed load!</string>
     <string name="title_activity_news">NewsActivity</string>
+
+    <string name="lost_internet_connection">Sorry, there is no Internet connection.
+        The full text is available.</string>
+
+    <string name="full_news_screen_title">Full text</string>
+    <string name="list_news_screen_title">List news</string>
+    <string name="loading_news_screen_title">Loading news</string>
 </resources>

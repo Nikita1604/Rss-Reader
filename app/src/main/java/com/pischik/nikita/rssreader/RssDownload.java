@@ -2,6 +2,8 @@ package com.pischik.nikita.rssreader;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,9 +42,13 @@ public class RssDownload{
     private static XmlPullParserFactory xmlFactoryObject;
 
     /**
+     * field contain url rss feed
+     */
+    private static final String urlFeed = "http://news.tut.by/rss/pda/all.rss";
+
+    /**
      * method that parse xml rss feed
      */
-
     private static void parseXml(XmlPullParser myParser, Context context) {
         /**
          * field "event" contain type of XML part
@@ -124,6 +132,48 @@ public class RssDownload{
         return newDescription.substring(0,index);
     }
 
+    public  static void clearDatabase(Context context) {
+        if (RssDownload.hasConnect(context)) {
+            ImageLoader.getInstance().clearDiskCache();
+            ImageLoader.getInstance().clearMemoryCache();
+            /**
+             * clear database from old RSS news
+             */
+            DatabaseHelper databaseHelper = OpenHelperManager
+                    .getHelper(context, DatabaseHelper.class);
+            try {
+                TableUtils.dropTable(databaseHelper.getConnectionSource(), NewsItem.class, false);
+                TableUtils.createTable(databaseHelper.getConnectionSource(), NewsItem.class);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * method checked Internet connection
+     */
+    public static boolean hasConnect(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * method that represent publishing date in new format
      */
@@ -176,12 +226,12 @@ public class RssDownload{
     /**
      * method that use AsyncTask to Download XML file RSS feed
      */
-    public static void Download(final String url, final Context context,
+    public static void Download(final boolean isFirst, final Context context,
                                 final SherlockFragmentActivity activity) {
         AsyncTask asyncTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
-                String urlStr = url;
+                String urlStr = urlFeed;
                 InputStream is = null;
                 try {
                     URL url = new URL(urlStr);
@@ -219,7 +269,12 @@ public class RssDownload{
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                ((NewsActivity)activity).onDownloadAndParseFinished();
+                if (isFirst) {
+                    ((NewsActivity)activity).onDownloadAndParseFinished();
+                } else {
+                    ((NewsActivity)activity).updateListNews();
+                }
+
             }
         };
         asyncTask.execute();
