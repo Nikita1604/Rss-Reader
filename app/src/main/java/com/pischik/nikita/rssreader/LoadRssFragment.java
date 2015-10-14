@@ -29,7 +29,7 @@ public class LoadRssFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.activity_main,
                 container, false);
 
-        RssDownload.clearDatabase(getSherlockActivity().getApplicationContext());
+        //RssDownload.clearDatabase(getSherlockActivity().getApplicationContext());
         getSherlockActivity().getSupportActionBar().setTitle(R.string.loading_news_screen_title);
 
         /**

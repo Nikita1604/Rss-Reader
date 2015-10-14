@@ -53,8 +53,9 @@ public class ListNewsFragment extends SherlockFragment {
          * initialization imageLoader to use Universal Image Loader
          */
         displayImageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
                 .cacheOnDisk(true)
+                .cacheInMemory(true)
+                .showImageOnFail(R.mipmap.ic_launcher)
                 .build();
 
         imageLoader = ImageLoader.getInstance();
@@ -106,7 +107,7 @@ public class ListNewsFragment extends SherlockFragment {
         public boolean onMenuItemClick(com.actionbarsherlock.view.MenuItem item) {
             listView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            RssDownload.clearDatabase(getSherlockActivity().getApplicationContext());
+            //RssDownload.clearDatabase(getSherlockActivity().getApplicationContext());
             RssDownload.Download(false, getSherlockActivity().getApplicationContext(),
                     getSherlockActivity());
             return false;

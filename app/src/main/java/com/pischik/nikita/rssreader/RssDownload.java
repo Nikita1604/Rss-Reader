@@ -15,6 +15,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -62,6 +63,8 @@ public class RssDownload{
         String imageUrl = "description";
         String pubDate = "pubDate";
 
+        ImageLoader imageLoader = ImageLoader.getInstance();
+
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
 
         Dao<NewsItem, Integer> newsDao = databaseHelper.getNewsItemsDao();
@@ -98,6 +101,8 @@ public class RssDownload{
                                 newsItem.setPubDate(parsePubDate(pubDate));
                                 newsItem.setFullNewsUrl(link);
                                 newsItem.setImageUrl(parseDescription(imageUrl));
+                                imageLoader.loadImage(newsItem.getImageUrl(),
+                                        new SimpleImageLoadingListener());
                                 newsDao.create(newsItem);
                                 break;
                         }
@@ -133,9 +138,6 @@ public class RssDownload{
     }
 
     public  static void clearDatabase(Context context) {
-        if (RssDownload.hasConnect(context)) {
-            ImageLoader.getInstance().clearDiskCache();
-            ImageLoader.getInstance().clearMemoryCache();
             /**
              * clear database from old RSS news
              */
@@ -147,7 +149,6 @@ public class RssDownload{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
     }
 
     /**
@@ -249,7 +250,7 @@ public class RssDownload{
 
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     parser.setInput(is, null);
-
+                    clearDatabase(context);
                     parseXml(parser, context);
 
                     is.close();
